@@ -1,7 +1,7 @@
 // **************************************************************************************************************
 // ************************************************** DEFINES ***************************************************
 // ************************************************************************************************************** 
-#define PLUGIN_VERSION "1.3.7.1"
+#define PLUGIN_VERSION "1.3.8"
 #define UPDATE_URL "https://raw.githubusercontent.com/MK99MA/SoMoE-19/master/addons/sourcemod/updatefile.txt"
 #define MAX_NAMES 10
 #define MAXCONES_DYN 15
@@ -74,11 +74,11 @@
 // *****************************************************************************************************************
 public Plugin myinfo =
 {
-	name		 = "SoMoE-19",
-	author		 = "Marco Boogers & Arturo",
+	name		 = "FSM-25",
+	author		 = "Marco Boogers & Arturo & Freebird",
 	description	 = "A plugin for soccer servers",
 	version		 = PLUGIN_VERSION,
-	url			 = "https://github.com/MK99MA/soccermod-2019edit"
+	url			 = "https://github.com/saltysteev/FSM-25"
 };
 
 // ******************************************************************************************************************
@@ -785,6 +785,7 @@ public void OnClientPutInServer(int client)
 	SkinsOnClientPutInServer(client);
 	//SprintOnClientPutInServer(client);
 	AFKKickOnClientPutInServer(client);
+	//DonatorSoundPutInServer(client);
 	
 	//LCOnClientConnected(client);
 
@@ -1256,6 +1257,7 @@ public void LoadConfigSoccer()
 	}
 
 	SetCvarInt("mp_freezetime",				 0);
+	SetCvarInt("mp_flashlight",				  1);
 	SetCvarInt("mp_roundtime",				  60);
 	SetCvarInt("phys_pushscale",				phys_pushscale);
 	SetCvarFloat("phys_timescale",			  phys_timescale);

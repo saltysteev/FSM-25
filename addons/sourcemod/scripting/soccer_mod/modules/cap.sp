@@ -3,6 +3,7 @@
 // ************************************************************************************************************
 public void CapOnPluginStart()
 {
+	char voteNum[2] = {0, 0};
 }
 
 public void CapEventPlayerDeath(Event event)
@@ -73,6 +74,30 @@ public void CapEventRoundEnd(Event event)
 // **************************************************************************************************************
 // ************************************************** CAP MENU **************************************************
 // **************************************************************************************************************
+public void OpenCapVoteMenu(int client)
+{
+	Menu menu = new Menu(CapVoteMenuHandler);
+	menu.SetTitle("Fair Captains?");
+	menu.AddItem("yes", "Yes");
+	menu.AddItem("no", "No");
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public void CapVoteMenuHandler(Menu menu, MenuAction action, int client, int choice)
+{
+	voteNum = {0, 0};
+	if (action == MenuAction_Select)
+	{
+		char menuItem[32];
+		menu.GetItem(choice, menuItem, sizeof(menuItem));
+
+		if (StrEqual(menuItem, "yes"))	voteNum[0]++;
+		else if (StrEqual(menuItem, "no"))	voteNum[1]++;
+	}
+	else if (action == MenuAction_Cancel && choice == -6)   OpenMenuAdmin(client);
+	else if (action == MenuAction_End)					  menu.Close();
+}
+
 public void OpenCapMenu(int client)
 {
 	char capString[32];
@@ -109,7 +134,7 @@ public int CapMenuHandler(Menu menu, MenuAction action, int client, int choice)
 		if (!matchStarted)
 		{
 			if (StrEqual(menuItem, "spec"))		 CapPutAllToSpec(client);
-			else if (StrEqual(menuItem, "random"))  CapAddRandomPlayer(client);
+			else if (StrEqual(menuItem, "random"))  CapStartCapPicking(client);
 			else if (StrEqual(menuItem, "capweap"))	OpenWeaponMenu(client);
 			else if (StrEqual(menuItem, "start"))
 			{
@@ -304,8 +329,16 @@ public int CapPickMenuHandler(Menu menu, MenuAction action, int client, int choi
 
 				LogMessage("%N <%s> has picked %N <%s>", client, steamid, target, targetSteamid);
 
-				capPicker = capT;
-				if (capPicksLeft > 0) OpenCapPickMenu(capT);
+				if (capPicksLeft == 2)
+				{
+					if (client == capCT) OpenCapPickMenu(capCT);
+					else if (client == capT) OpenCapPickMenu(capT);
+				}
+				else
+				{
+					capPicker = capT;
+					if (capPicksLeft > 0) OpenCapPickMenu(capT);
+				}
 			}
 			else if (client == capT)
 			{
@@ -324,8 +357,16 @@ public int CapPickMenuHandler(Menu menu, MenuAction action, int client, int choi
 
 				LogMessage("%N <%s> has picked %N <%s>", client, steamid, target, targetSteamid);
 
-				capPicker = capCT;
-				if (capPicksLeft > 0) OpenCapPickMenu(capCT);
+				if (capPicksLeft == 2)
+				{
+					if (client == capCT) OpenCapPickMenu(capCT);
+					else if (client == capT) OpenCapPickMenu(capT);
+				}
+				else
+				{
+					capPicker = capCT;
+					if (capPicksLeft > 0) OpenCapPickMenu(capCT);
+				}
 			}
 		}
 		else
@@ -442,6 +483,40 @@ public int CapPositionMenuHandler(Menu menu, MenuAction action, int client, int 
 // ************************************************************************************************************
 // ************************************************** TIMERS **************************************************
 // ************************************************************************************************************
+public Action TimerCapPickCountDown(Handle timer, any seconds)
+{
+	for (int player = 1; player <= MaxClients; player++)
+	{
+		if (IsClientInGame(player) && IsClientConnected(player)) PrintCenterText(player, "Cap vote will end in %i seconds", seconds);
+	}
+}
+
+public Action TimerCapVoteCountDownEnd(Handle timer, int client)
+{
+	if (voteNum[0] >= voteNum[1])
+	{
+		for (int player = 1; player <= MaxClients; player++)
+		{
+			if (IsClientInGame(player) && IsClientConnected(player))
+			{
+				CPrintToChat(player, "{%s}[%s] {%s}Vote successful %s-%s", prefixcolor, prefix, textcolor, voteNum[0], voteNum[1]);
+			}
+		}
+		CapStartFight(client);
+	}
+	else
+	{
+		for (int player = 1; player <= MaxClients; player++)
+		{
+			if (IsClientInGame(player) && IsClientConnected(player))
+			{
+				CPrintToChat(player, "{%s}[%s] {%s}Vote unsuccessful %s-%s, repicking...", prefixcolor, prefix, textcolor, voteNum[0], voteNum[1]);
+			}
+		}
+		CapStartCapPicking(client);
+	}
+}
+
 public Action TimerCapFightCountDown(Handle timer, any seconds)
 {
 	for (int player = 1; player <= MaxClients; player++)
@@ -563,7 +638,36 @@ public void CapPutAllToSpec(int client)
 	}
 }
 
-public void CapAddRandomPlayer(int client)
+public void CapStartCapPicking(int client)
+{
+	CapPutAllToSpec(client);
+	int players[32], count;
+	for (int player = 1; player <= MaxClients; player++)
+	{
+		if (IsClientInGame(player) && IsClientConnected(player) && GetClientTeam(player) < 2 && !IsClientSourceTV(player))
+		{
+			players[count] = player;
+			count++;
+		}
+	}
+
+	if (count)
+	{
+		for (int i = 1; i <= 2; i++)
+		{
+			int randomPlayer = players[GetRandomInt(0, count - 1)];
+			if (GetTeamClientCount(2) < GetTeamClientCount(3)) ChangeClientTeam(randomPlayer, 2);
+			else ChangeClientTeam(randomPlayer, 3);
+		}
+		CreateTimer(0.0, TimerCapPickCountDown, 3);
+		CreateTimer(1.0, TimerCapPickCountDown, 2);
+		CreateTimer(2.0, TimerCapPickCountDown, 1);
+		CreateTimer(3.0, TimerCapPickCountDownEnd, client);
+	}
+	else CPrintToChat(client, "{%s}[%s] {%s}No players in spectator", prefixcolor, prefix, textcolor);
+}
+
+/*public void CapAddRandomPlayer(int client)
 {
 	int players[32], count;
 	for (int player = 1; player <= MaxClients; player++)
@@ -601,7 +705,7 @@ public void CapAddRandomPlayer(int client)
 		}
 	}
 	else CPrintToChat(client, "{%s}[%s] {%s}No players in spectator", prefixcolor, prefix, textcolor);
-}
+}*/
 
 public void CapStartFight(int client)
 {
@@ -821,14 +925,7 @@ public int ImportJoinNumber(char steamid[32])
 /*public void AutoCapStart(int client)
 {
 	if (!capFightStarted)
-	{
-		if(passwordlock == 1)
-		{
-			pwchange = true;
-			CPrintToChatAll("{%s}[%s] {%s}AFK Kick enabled.", prefixcolor, prefix, textcolor);
-			AFKKick();
-		}
-		
+	{		
 		// count players
 		capnr = GetClientCount();
 		if(first12Set == 1)

@@ -161,6 +161,9 @@ int capPicksLeft		= 0;
 int capnr				= 0;
 int nrhelper			= 0;
 
+// ARRAYS
+char voteNum[2] = {0, 0};
+
 // STRINGS
 char capweapon[32]		="knife";
 char capwparray[27][32]		=
