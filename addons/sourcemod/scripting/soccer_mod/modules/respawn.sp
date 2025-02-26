@@ -42,13 +42,13 @@ public Action DelayFreezePlayer(Handle timer, any client)
 // ************************************************************************************************************
 public Action Dissolve(Handle timer, any client)
 {
-	if (!IsValidEntity(client))		return;
+	if (!IsValidEntity(client))	return Plugin_Handled;
 	
 	int ragdoll = GetEntPropEnt(client, Prop_Send, "m_hRagdoll");
 	if (ragdoll<0)
 	{
 		PrintToServer("Could not get ragdoll for player!");	
-		return;
+		return Plugin_Handled;
 	}
 	
 	char dname[32];
@@ -67,4 +67,6 @@ public Action Dissolve(Handle timer, any client)
 		}
 		else if(dissolveSet == 1) AcceptEntityInput(ragdoll, "kill");
 	}
+	
+	return Plugin_Handled;
 }

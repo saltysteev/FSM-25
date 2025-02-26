@@ -894,7 +894,7 @@ public void OpenMenuMapSoundsAdd(int client)
 				menu.AddItem(sound, sound);
 				
 			}	
-			while mapdefaultKV.GotoNextKey();
+			while (mapdefaultKV.GotoNextKey());
 			
 			mapdefaultKV.Rewind();
 			mapdefaultKV.Close();

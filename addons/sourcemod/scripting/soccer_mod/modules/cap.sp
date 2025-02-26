@@ -3,7 +3,6 @@
 // ************************************************************************************************************
 public void CapOnPluginStart()
 {
-	char voteNum[2] = {0, 0};
 }
 
 public void CapEventPlayerDeath(Event event)
@@ -491,7 +490,7 @@ public Action TimerCapPickCountDown(Handle timer, any seconds)
 	}
 }
 
-public Action TimerCapVoteCountDownEnd(Handle timer, int client)
+public Action TimerCapPickCountDownEnd(Handle timer, int client)
 {
 	if (voteNum[0] >= voteNum[1])
 	{
@@ -744,7 +743,7 @@ public void CapStartFight(int client)
 		capFightStarted = true;
 		capPicksLeft = (matchMaxPlayers - 1) * 2;
 		
-		bool noPos[MAXPLAYERS+1] = false;
+		bool noPos[MAXPLAYERS+1] = {false, ...};
 		int posnr[MAXPLAYERS+1];
 		
 		CreateTimer(0.0, TimerCapFightCountDown, 3);

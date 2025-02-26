@@ -27,7 +27,7 @@ public void DeadChatOnPluginStart()
 	
 }
 
-public Action Hook_UserMessage(UserMsg msg_id, Handle bf, const char[] players, int playersNum, bool reliable, bool init)
+public Action Hook_UserMessage(UserMsg msg_id, Handle bf, const int[] players, int playersNum, bool reliable, bool init)
 {
 	g_msgAuthor = BfReadByte(bf);
 	g_msgIsChat = view_as<bool>(BfReadByte(bf));
@@ -45,27 +45,15 @@ public Action Event_PlayerSay(Handle event, const char[] name, bool dontBroadcas
 {
 	int mode = DeadChatMode;
 	
-	if (mode < 1)
-	{
-		return;
-	}
+	if (mode < 1) return Plugin_Handled;
 	
-	if (mode > 1 && g_hCvarAllTalk != INVALID_HANDLE && !GetConVarBool(g_hCvarAllTalk))
-	{
-		return;
-	}
+	if (mode > 1 && g_hCvarAllTalk != INVALID_HANDLE && !GetConVarBool(g_hCvarAllTalk))	return Plugin_Handled;
 	
-	if (GetClientOfUserId(GetEventInt(event, "userid")) != g_msgAuthor)
-	{
-		return;
-	}
+	if (GetClientOfUserId(GetEventInt(event, "userid")) != g_msgAuthor)	return Plugin_Handled;
 	
 	mode = DeadChatVis;
 	
-	if (g_msgIsTeammate && mode < 1)
-	{
-		return;
-	}
+	if (g_msgIsTeammate && mode < 1) return Plugin_Handled;
 	
 	int[] players = new int[MaxClients];
 	int playersNum = 0;
@@ -97,10 +85,7 @@ public Action Event_PlayerSay(Handle event, const char[] name, bool dontBroadcas
 		}
 	}
 	
-	if (playersNum == 0)
-	{
-		return;
-	}
+	if (playersNum == 0) return Plugin_Handled;
 	
 	Handle SayText2 = StartMessage("SayText2", players, playersNum, USERMSG_RELIABLE | USERMSG_BLOCKHOOKS);
 	

@@ -62,7 +62,7 @@ public void SetDefaultValues(int type)
 						PrintToServer("Entity %s of type %s killed!", sound, entitytype);
 					}
 				}	
-				while mapdefaultKV.GotoNextKey();
+				while (mapdefaultKV.GotoNextKey());
 			}
 		}
 	}

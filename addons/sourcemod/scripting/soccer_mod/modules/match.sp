@@ -309,7 +309,7 @@ public Action RefreshMatchLog(Handle timer, int client)
 	OpenMatchLogMenu(client);
 	matchLogRefresh = CreateTimer(5.0, RefreshMatchLog, client);
 	
-	return;
+	return Plugin_Handled;
 }
 
 public void SaveLogsOnMatchStart() //Set everything to default

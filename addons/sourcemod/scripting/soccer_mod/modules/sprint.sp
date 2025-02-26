@@ -142,7 +142,7 @@ public Action SprintHud(Handle timer, DataPack pack)
 		}
 	}
 	
-	return;
+	return Plugin_Handled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

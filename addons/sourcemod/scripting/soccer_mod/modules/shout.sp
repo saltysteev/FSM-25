@@ -242,8 +242,6 @@ public Action shoutCD_Timer(Handle timer, int client)
 	{
 		cdStatus[client] &= ~ CLIENT_SHOUTCD;
 	}
-
-	return;
 }
 
 // *************************************************** SOUNDLISTS ***************************************************
@@ -340,8 +338,6 @@ public Action shoutAD_Timer(Handle timer, int client)
 		if(CheckCommandAccess(client, "generic_admin", ADMFLAG_RCON, true)) CPrintToChat(client, "{%s}[%s] {%s}Use !shout to shout or !shoutset to manage them.", prefixcolor, prefix, textcolor);
 		else CPrintToChat(client, "{%s}[%s] {%s}Use !shout to bring up the shout menu.", prefixcolor, prefix, textcolor);
 	}
-
-	return;
 }
 
 public void RemoveShout(char soundName[64])

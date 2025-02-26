@@ -78,9 +78,11 @@ public Action ProfileCommand(int client, int args)
 	
 	if(iTarget == -1) return Plugin_Handled;
 	
-	char steamID[32];
-	GetClientAuthId(iTarget, AuthId_Steam2, steamID, sizeof(steamID));
-	DisplayProfileTo(client, steamID);
+	char steamID[21];
+	if( client > 0 && GetClientAuthId(client, AuthId_SteamID64, steamID, sizeof(steamID)) && strlen(steamID) > 16)
+    {
+		//DisplayProfileTo(client, steamID);
+	}
 	
 	return Plugin_Handled;
 }
@@ -1289,26 +1291,21 @@ public void RandPass()
 }
 
 // *********************************************** PROFILE FUNCTIONS ************************************************
-
+/*
 public void DisplayProfileTo(int client, char[] steamid)
 {
-	char szLink[128];
-	char szCommunityID[18];
-
-	GetCommunityIDString(steamid, szCommunityID, sizeof(szCommunityID)); 
-	Format(szLink, sizeof(szLink), "http://steamcommunity.com/profiles/%s", szCommunityID);
-	
+	char[] steamLink = ("http://steamcommunity.com/profiles/%s", steamid);
 	if (client)
 	{
 		//ShowMOTDPanel(iClient, "Steam Profile", szLink, MOTDPANEL_TYPE_URL);
-		AdvMOTD_ShowMOTDPanel(client, "Steam Profile", szLink, MOTDPANEL_TYPE_URL, true, false, true);
+		AdvMOTD_ShowMOTDPanel(client, "Steam Profile", steamLink, MOTDPANEL_TYPE_URL, true, false, true);
 	}
 	else
 	{
-		PrintToServer("%s", szLink);
+		PrintToServer("%s", steamLink);
 	}
-}
-
+}*/
+/*
 stock bool GetCommunityIDString(char[] steamID, char[] CommunityID, int CommunityIDSize) 
 { 
 	char SteamIDParts[3][11]; 
@@ -1332,7 +1329,7 @@ stock bool GetCommunityIDString(char[] steamID, char[] CommunityID, int Communit
 	return true; 
 }
 
-/*public Action Command_Test(int client, int args)
+public Action Command_Test(int client, int args)
 {
 	char model[128] = "models/soccer_mod/brazuca_test.mdl";
 
@@ -1377,9 +1374,9 @@ stock bool GetCommunityIDString(char[] steamID, char[] CommunityID, int Communit
 	else CPrintToChat(client, "{%s}[%s] {%s}Cant spawn model %s", prefixcolor, prefix, textcolor, model);
 	
 	return Plugin_Handled;
-}*/
+}
 
-/*public Action Command_Test(int client, int args)
+public Action Command_Test(int client, int args)
 {	
 	float radius;
 	

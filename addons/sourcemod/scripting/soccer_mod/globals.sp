@@ -162,7 +162,7 @@ int capnr				= 0;
 int nrhelper			= 0;
 
 // ARRAYS
-char voteNum[2] = {0, 0};
+int voteNum[2] = {0, 0};
 
 // STRINGS
 char capweapon[32]		="knife";
@@ -431,7 +431,7 @@ float afk_Position[MAXPLAYERS+1][3];
 float afk_Angles[MAXPLAYERS+1][3];
 
 // HANDLES
-Handle afk_Timer[MAXPLAYERS+1] 	= null;
+Handle afk_Timer[MAXPLAYERS+1] 	= {null, ...};
 
 // INTEGER
 int afk_menutime				= 20;

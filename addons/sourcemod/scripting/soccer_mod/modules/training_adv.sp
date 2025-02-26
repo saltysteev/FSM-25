@@ -702,9 +702,9 @@ public void SpawnTargetMulti(int i, int client, int team, float targetPos[3], ch
 			Format(entityName, sizeof(entityName), "soccer_mod_training_target_%i_%i", team, i);		
 			entityModel = trainingModelTarget;
 		}
-		
+
 		index = CreateEntityByName("prop_dynamic");
-		
+
 		if (index != -1)
 		{
 			float tempPos[3];
@@ -1319,7 +1319,7 @@ public float GetOffset(float pos[3])
 }
 
 
-float GetOffsetPos(float spawnPos[3], int i)
+float[] GetOffsetPos(float spawnPos[3], int i)
 {
 	if(xorientation)
 	{
@@ -1494,19 +1494,17 @@ public void OpenAdvancedTrainingConeMenu(int client)
 
 	menu.SetTitle("Soccer Mod - Cone Manager");
 
-	char ConeTypeString[32], ConeString[32], RemoveString[32], type[32];
+	char ConeTypeString[32], ConeString[32], RemoveString[32];
 	
 	if(coneDynamic)				
 	{
 		ConeTypeString = "Cone Type: Dynamic (red)";
 		RemoveString = "Remove all red cones";
-		type = "Dynamic";
 	}
 	else 						
 	{
 		ConeTypeString = "Cone Type: Static (blue)";
 		RemoveString = "Remove all blue cones";
-		type = "Static";
 	}
 	
 	Format(ConeString, sizeof(ConeString), "Place/Remove Cone (%i left)", MAXCONES_STA + MAXCONES_DYN - conecounter);

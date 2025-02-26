@@ -316,5 +316,5 @@ public Action DisplayHudText(Handle timer, DataPack tpack)
 		delete h_TIMER_SET[client];
 	}
 		
-	return;
+	return Plugin_Handled;
 }

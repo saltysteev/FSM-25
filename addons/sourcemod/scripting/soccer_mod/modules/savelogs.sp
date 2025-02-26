@@ -315,7 +315,7 @@ static stock bool CheckPlayerNames(int client, const char[] name)
     return false;
 }
 
-static stock char GetNames(int client)
+static stock char[] GetNames(int client)
 {
     char output[(MAX_NAME_LENGTH*MAX_NAMES)+1]; //just to make sure the size will be enough
     for(int i = 0; i <= iPlayerNames[client]; i++)
